@@ -1,26 +1,27 @@
-import Java.util.*;
-import NodeSymbol;
-import EdgeSymbol; 
-import Node;
-
-class Graph{
+import java.util.*;
+import java.awt.*;
+public class Graph extends Frame{
 
     LinkedList<Node> Nodes = new LinkedList<Node>();
-    int WindowHeight;
     int WindowWidth;
+    int WindowHeight;
 
-    Graph(Node[] GivenNodes){
-        Nodes[] = new Node[Size];
-        Nodes = GivenNodes
+    Graph(LinkedList<Node> Nodes, int WindowWidth, int WindowHeight){
+        this.Nodes = Nodes;
+        this.WindowHeight = WindowHeight;
+        this.WindowWidth = WindowWidth;
+        Graphics Graphics =  new Graphics(null, WindowWidth, WindowHeight);
         }
 
-    public void Draw(Node[] Nodes){
-        Iterator NodesIterator = Nodes.iterator();
+    public void Draw(LinkedList<Node> Nodes){
+        
+        Iterator<Node> NodesIterator = Nodes.iterator();
         while(NodesIterator.hasNext()){
             NodesIterator.next().Draw();
         }
+    }
 
-    public Node[] GiveNodes(){
+    public LinkedList<Node>  GiveNodes(){
         return Nodes;
     }
 
@@ -28,17 +29,19 @@ class Graph{
 
     }
 
-    public Node RemoveNode(int Index){
-        
-    }
-
-    public int GiveNextIndex(){
-
-    }
-
-    public void Arrange(){
-       //Have to figure out 
-    }
-    }
-    }
+ //public Node RemoveNode(int Index){
+ //    
+ //}
+//
+ //public int GiveNextIndex(){
+//
+ //}
+//
+ //public void Arrange(){
+ //   //Have to figure out 
+ //}
+//
+ //public Node GiveRandomNode(){
+ //    //Have to figure out
+ //}
 }

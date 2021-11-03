@@ -1,4 +1,4 @@
-class NodeSymbol{
+public class NodeSymbol{
 
     int Index;
     int[] Color;

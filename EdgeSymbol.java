@@ -1,9 +1,10 @@
-class EdgeSymbol{
+import java.util.*;
+public class EdgeSymbol{
     
-    Node[] ToConnect;
+    LinkedList<Node> ToConnect;
     int Weight;
 
-    EdgeSymbol(Node[] ToConnect, int Weight){
+    EdgeSymbol(LinkedList<Node> ToConnect, int Weight){
         this.ToConnect = ToConnect;
         this.Weight = Weight;
     }
