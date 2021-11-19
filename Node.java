@@ -2,57 +2,48 @@ import java.util.*;
 
 public class Node{
 
-    int Index;
-    int[] Color;
-    int Radius;
-    int[] Position;
-    LinkedList<Node> Edges = new LinkedList<Node> ();
-    Data Data;
-    NodeSymbol NodeSymbol;
-    EdgeSymbol EdgeSymbol;
+    int index;
+    int color;
+    int radius;
+    int[] position;
+    LinkedList<Node> edges = new LinkedList<Node> ();
+    Data data;
 
-    Node(){
-
+    public Node(int index, int color, int radius, int[] position, LinkedList<Node> edges){
+        this.index = index;
+        this.color = color;
+        this.radius = radius;
+        this.position = position;
+        this.edges = edges;
     }
 
-    Node(int Index, int[] Color, int Radius, int[] Position, LinkedList<Node> Edges){
-        this.Index = Index;
-        this.Color = Color;
-        this.Radius = Radius;
-        this.Position = Position;
-        this.Edges = Edges;
-       //NodeSymbol = new NodeSymbol(Index, Color, Radius);
-       //EdgeSymbol = new EdgeSymbol(Node[] ToConnect, int Weight);
+    public void ChangeColor(int color){
+        this.color = color;
     }
 
-    public void ChangeColor(int[] Color){
-        this.Color = Color;
+    public int giveColor(){
+        return color;
     }
 
-    public int[] GiveColor(){
-        return Color;
+    public void setEdges(LinkedList<Node> edges){
+        this.edges = edges;
     }
 
-    public int GiveIndex(){
-        return Index;
+    public int giveIndex(){
+        return index;
     }
 
-    public LinkedList<Node> GiveEdges(){
-        return Edges;
+    public LinkedList<Node> giveEdges(){
+        return edges;
     }
 
-    public Data GiveData(){
-        return Data;
+    public Data giveData(){
+        return data;
     }
 
    //public int[] GivePosition(){
    //    //return Position;
    //}
-
-    public void Draw(){
-        NodeSymbol.Draw();
-        EdgeSymbol.Draw();
-    }
 }
 
 interface Data{

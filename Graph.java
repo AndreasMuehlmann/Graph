@@ -1,47 +1,47 @@
 import java.util.*;
-import java.awt.*;
-public class Graph extends Frame{
+public class Graph{
 
-    LinkedList<Node> Nodes = new LinkedList<Node>();
-    int WindowWidth;
-    int WindowHeight;
+    LinkedList<Node> nodes = new LinkedList<Node>();
+    Graphic graphic;
 
-    Graph(LinkedList<Node> Nodes, int WindowWidth, int WindowHeight){
-        this.Nodes = Nodes;
-        this.WindowHeight = WindowHeight;
-        this.WindowWidth = WindowWidth;
-        Graphics Graphics =  new Graphics(null, WindowWidth, WindowHeight);
+    public Graph(LinkedList<Node> nodes, int windowWidth, int windowHeight){
+        this.nodes = nodes;
+        graphic = new Graphic(nodes, 1000, 1000);
+    }
+
+    public LinkedList<Node>  giveNodes(){
+        return nodes;
+    }
+
+    public void addNode(Node Node){
+        nodes.add(Node);
+    }
+
+   //public int GiveNextIndex(){
+    
+   //}
+
+    public void Arrange(){
+        //Have to figure out 
+    }
+
+    public void makeRandomNodes(int amount){
+        Random random = new Random();   
+        int startSize = nodes.size();
+
+        for (int i = 0; i < amount; i++){
+            int color = random.nextInt(graphic.colors.length); 
+            int[] position = {0, 0};
+            nodes.add(new Node(i, color, 20, position, null));
         }
 
-    public void Draw(LinkedList<Node> Nodes){
-        
-        Iterator<Node> NodesIterator = Nodes.iterator();
-        while(NodesIterator.hasNext()){
-            NodesIterator.next().Draw();
+        LinkedList<Node> edges = new LinkedList<Node>();
+        for (int j = 0; j < amount; j++){
+            int edgesAmount = random.nextInt(amount);
+            for (int k = 0; k <  edgesAmount; k++){
+                edges.add(nodes.get(random.nextInt(amount) + startSize));
+                nodes.get(nodes.size() - 1).setEdges(edges);
+            }
         }
     }
-
-    public LinkedList<Node>  GiveNodes(){
-        return Nodes;
-    }
-
-    public void AddNode(Node Node){
-
-    }
-
- //public Node RemoveNode(int Index){
- //    
- //}
-//
- //public int GiveNextIndex(){
-//
- //}
-//
- //public void Arrange(){
- //   //Have to figure out 
- //}
-//
- //public Node GiveRandomNode(){
- //    //Have to figure out
- //}
 }
