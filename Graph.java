@@ -17,10 +17,6 @@ public class Graph{
         nodes.add(Node);
     }
 
-   //public int GiveNextIndex(){
-    
-   //}
-
     public void Arrange(){
         //Have to figure out 
     }
@@ -30,7 +26,7 @@ public class Graph{
         int startSize = nodes.size();
 
         for (int i = 0; i < amount; i++){
-            int color = random.nextInt(graphic.colors.length); 
+            int color = random.nextInt(graphic.giveColors().length); 
             int[] position = {0, 0};
             nodes.add(new Node(i, color, 20, position, null));
         }
@@ -43,5 +39,6 @@ public class Graph{
                 nodes.get(nodes.size() - 1).setEdges(edges);
             }
         }
+        graphic.setNodes(nodes);
     }
 }

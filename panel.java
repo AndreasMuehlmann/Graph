@@ -1,21 +1,44 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 
 class MyPanel extends JPanel {
 
-    public MyPanel() {
+    LinkedList<Node> nodes;
+    Color[] colors= {Color.white,Color.blue,Color.green,Color.orange,Color.yellow,Color.black,Color.pink,Color.red};
+    int windowWidth;
+    int windowHeight;
+
+    public MyPanel(LinkedList<Node> nodes, int windowWidth, int windowHeight) {
+        this.nodes = nodes;
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
         setBorder(BorderFactory.createLineBorder(Color.black));
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(1000,1000);
+        return new Dimension(windowWidth, windowHeight);
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);       
 
-        // Draw Text
-        g.drawString("This is my custom Panel!",10,20);
+        Graphics2D g2d = (Graphics2D) g;
+
+        Color original = g2d.getColor();
+        g2d.drawOval(10,10,100,100);
+        g2d.setColor(Color.black);
+        g2d.fillOval(10,10,100,100);
+        g2d.setColor(original);
+
+       //Graphics2D g2d = (Graphics2D) g;
+       //for (int i = 0; i < nodes.size(); i++){
+       //    Node node = nodes.get(i);
+       //    drawNode(g2d, node);
+       //    for (int j = 0; j < node.edges.size(); j++){
+       //        drawEdge(g2d, node, node.edges.get(j));
+       //    }
+       //}
     }  
 
     private void drawNode(Graphics2D g2d, Node node){
@@ -30,5 +53,9 @@ class MyPanel extends JPanel {
 
     private void drawEdge(Graphics2D g2d, Node from, Node to){
         g2d.drawLine(from.position[0], from.position[1], to.position[0], to.position[1]);
+    }
+
+    public void setNodes(LinkedList<Node> nodes){
+        this.nodes = nodes;
     }
 }
