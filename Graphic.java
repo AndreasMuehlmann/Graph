@@ -4,10 +4,10 @@ import java.util.*;
 
 public class Graphic extends JFrame{
 
-    MyPanel myPanel;
+    Panel Panel;
 
     public Graphic(LinkedList<Node> nodes, int windowWidth, int windowHeight){
-        myPanel = new MyPanel(nodes , windowWidth, windowHeight);
+        Panel = new Panel(nodes , windowWidth, windowHeight);
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -22,22 +22,21 @@ public class Graphic extends JFrame{
         SwingUtilities.isEventDispatchThread());
         JFrame f = new JFrame("graphgraph");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.add(myPanel);
+        f.add(Panel);
         f.pack();
         f.setVisible(true);
     }
 
+    public void update(){
+        Panel.update();
+    }
+
     public void setNodes(LinkedList<Node> nodes){
-        myPanel.setNodes(nodes);
+        Panel.setNodes(nodes);
     }
 
     public Color[] giveColors(){
-        return myPanel.colors;
-    }
-
-    public void update(){
-        repaint();
-        myPanel.update();
+        return Panel.colors;
     }
 }
        

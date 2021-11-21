@@ -4,23 +4,22 @@ public class Graph{
 
     Graphic graphic;
     LinkedList<Node> nodes = new LinkedList<Node>();
-    boolean oneColor;
     double nodeToEdgeRatio;
     int windowWidth;
     int windowHeight;
     int sideDistance;
 
-    public Graph(LinkedList<Node> nodes, boolean oneColor, int windowWidth, int windowHeight){
+    public Graph(LinkedList<Node> nodes, int windowWidth, int windowHeight, double nodeToEdgeRatio){
         this.nodes = nodes;
-        this.oneColor = oneColor;
-        this.nodeToEdgeRatio = 10.0;
+        this.nodeToEdgeRatio = nodeToEdgeRatio; // could use some work because not accurate
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         this.sideDistance = 50;
         graphic = new Graphic(nodes, windowWidth, windowHeight);
     }
 
-    public void update(){
+    public void update(){ // repaints the graph and updates the nodes of graphic
+        graphic.setNodes(nodes);
         graphic.update();
     }
 
@@ -40,87 +39,147 @@ public class Graph{
         return graphic.giveColors();
     }
 
-    public void Arrange(){
+    public void Arrange(){ // arranges nodes in a readable way
         //Have to figure out 
     }
 
-    public void randomColoring(){
-        Random random = new Random();
-        for (int i = 0; i < nodes.size(); i++){
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ie) {
-                throw new UnsupportedOperationException("Interrupts not supported.", ie);
-            }
-
-            nodes.get(random.nextInt(nodes.size())).setColor(random.nextInt(5));
-        }
-    }
-
-    public void makeRandomNodes(int amount){
-        if (amount == 0){
-            System.out.println("no nodes where added");
-            return;
-        }
+    public void makeRandomNodes(int amount, int color, int radius){ // color -1 for colorful nodes
         Random random = new Random();   
         int startSize = nodes.size();
+        boolean colorful = false;
+        if (color == -1)
+            colorful = true;
 
         for (int i = 0; i < amount; i++){
-            int color = (oneColor) ? 0 : random.nextInt(graphic.giveColors().length);
+            if (colorful) 
+                color = random.nextInt(graphic.giveColors().length);
             int[] position = {sideDistance + random.nextInt(windowWidth - sideDistance * 2), 
                 sideDistance + random.nextInt(windowHeight - sideDistance * 2)};
-            nodes.add(new Node(startSize + i, color, 30, position, new LinkedList<Node>()));
+
+            nodes.add(new Node(startSize + i, color, radius, position, new LinkedList<Node>()));
         }
         LinkedList<Node> edges = new LinkedList<Node>();
         for (int j = startSize; j < amount + startSize; j++){
             edges.clear();
+
             int edgesAmount = (int) (random.nextInt(amount) * nodeToEdgeRatio);
             for (int k = 0; k <  edgesAmount; k++){
                 edges.add(nodes.get(random.nextInt(nodes.size())));
             }
             nodes.get(j).setEdges(edges);
         }
-        graphic.setNodes(nodes);
-    }
-    
-
-    public LinkedList<Node> DFS(Node from, Node to){
-        return go(from, to, new LinkedList<Node>(), new boolean[nodes.size()]);
     }
 
-    public LinkedList<Node> go(Node from, Node to, LinkedList<Node> path, boolean[] visited){
+    public void standardNodes(int color, int radius){
+
+        setNodes(new LinkedList<Node> ());
+
+        int[] position0 = {200, 500};
+        int[] position1 = {200, 300};
+        int[] position2 = {400, 600};
+        int[] position3 = {400, 200};
+        int[] position4 = {600, 500};
+        int[] position5 = {600, 300};
+
+        addNode(new Node(0, color, radius, position0, new LinkedList<Node> ()));
+        addNode(new Node(1, color, radius, position1 , new LinkedList<Node> ()));
+        addNode(new Node(2, color, radius, position2 , new LinkedList<Node> ()));
+        addNode(new Node(3, color, radius, position3 , new LinkedList<Node> ()));
+        addNode(new Node(4, color, radius, position4 , new LinkedList<Node> ()));
+        addNode(new Node(5, color, radius, position5 , new LinkedList<Node> ()));
+
+
+        int[] edgesIndex0 = {4};
+        setUndirectedEdges(nodes.get(0), edgesIndex0);
+
+        int[] edgesIndex1 = {0, 3};
+        setUndirectedEdges(nodes.get(1), edgesIndex1);
+
+        int[] edgesIndex2 = {3, 5};
+        setUndirectedEdges(nodes.get(2), edgesIndex2);
+
+        int[] edgesIndex3 = {0, 5};
+        setUndirectedEdges(nodes.get(3), edgesIndex3);
+
+        int[] edgesIndex4 = {0,5};
+        setUndirectedEdges(nodes.get(4), edgesIndex4);
+
+        int[] edgesIndex5 = {1};
+        setUndirectedEdges(nodes.get(5), edgesIndex5);
+
+        update();
+    }
+
+    public void setUndirectedEdges(Node node, int[] edgesIndex){
+        LinkedList<Node> edges = new LinkedList<Node> ();
+
+        for (int edge : edgesIndex){
+            edges.add(nodes.get(edge));
+            nodes.get(edge).addEdge(node);
+        }
+        node.setEdges(edges);
+    }
+
+    public LinkedList<Node> DFS(Node from, Node to, int color) //Depthfirstsearch animated and gives path
+    {
+        LinkedList<Node> path = go(from, to, color, new LinkedList<Node>(), new boolean[nodes.size()]);
+        print_path(path);
+        return path;
+    }
+
+    public LinkedList<Node> go(Node from, Node to, int color,  LinkedList<Node> path, boolean[] visited) // helperfunction for DFS
+    {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ie) {
             throw new UnsupportedOperationException("Interrupts not supported.", ie);
         }
         visited[from.index] = true;
-        from.setColor(1);
+        from.setColor(color);
         update();
 
-        if (from == to){
-            System.out.println("found path");
-            path.add(from);
-            System.out.println(path);
-            return path;
-        }
+        LinkedList<Node> newPath = new LinkedList<Node>(path);
+        newPath.add(from);
+
+        if (from == to)
+            return newPath;
+        
         for (int i = 0; i < from.edges.size(); i++){
             Node edge = from.edges.get(i);
-            System.out.println(from.index);
             if (visited[edge.index]) 
                 continue;
 
-            LinkedList<Node> newPath = new LinkedList<Node>(path);
-            newPath.add(edge);
-            System.out.println(from.index);
-            LinkedList<Node> pathAddon = go(edge, to, newPath, visited);
+            newPath = go(edge, to, color, newPath, visited);
 
-            if (pathAddon.size() > 0){
-                path.addAll(pathAddon);
-                return path;
-            }
+            if (newPath.size() != 0 && newPath.get(newPath.size() - 1) == to)
+                return newPath;
         }
         return new LinkedList<Node>();
+    }
+
+    private void print_path(LinkedList<Node> path) 
+    {
+        System.out.println("path: ");
+        for (int i = 0; i < path.size(); i++){
+            System.out.println(path.get(i).index);
+        }
+        System.out.println("end\n");
+    }
+
+
+    public void randomColoring(){ //colors random nodes randomly
+        Random random = new Random();
+        for (int i = 0; i < nodes.size() * 2; i++){
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ie) {
+                throw new UnsupportedOperationException("Interrupts not supported.", ie);
+            }
+
+            nodes.get(random.nextInt(nodes.size())).setColor(random.nextInt(5));
+            update();
+        }
     }
 }

@@ -2,14 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-class MyPanel extends JPanel {
+class Panel extends JPanel {
 
     LinkedList<Node> nodes;
-    Color[] colors= {Color.yellow, Color.blue, Color.green, Color.orange, Color.pink, Color.red};
+    Color[] colors= {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.pink};
     int windowWidth;
     int windowHeight;
 
-    public MyPanel(LinkedList<Node> nodes, int windowWidth, int windowHeight) {
+    public Panel(LinkedList<Node> nodes, int windowWidth, int windowHeight) {
         this.nodes = nodes;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
@@ -23,24 +23,30 @@ class MyPanel extends JPanel {
         super.paintComponent(g);       
 
         Graphics2D g2d = (Graphics2D) g;
-        Node node;
-        for (int i = 0; i < nodes.size(); i++){
-            node = nodes.get(i);
-            for (int j = 0; j < node.edges.size(); j++){
-                drawEdge(g2d, node, node.edges.get(j));
+        for (Node node : nodes) {
+            for (Node edge : node.edges){
+                drawEdge(g2d, node, edge);
             }
         }
 
-        for (int k = 0; k < nodes.size(); k++){
-            node = nodes.get(k);
+        for (Node node : nodes){
             drawNode(g2d, node);
         }
     }  
 
+    public void setNodes(LinkedList<Node> nodes){
+        this.nodes = nodes;
+    }
+
+    public void update(){
+        repaint();
+    }
+
     private void drawNode(Graphics2D g2d, Node node){
         Color original = g2d.getColor();
         g2d.drawOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
-        g2d.setColor(colors[node.color]);
+        Color color = (node.color > 6) ? Color.white : colors[node.color];
+        g2d.setColor(color);
         g2d.fillOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
         g2d.setColor(original);
 
@@ -57,13 +63,5 @@ class MyPanel extends JPanel {
         int y2 = to.position[1];
 
         g2d.drawLine(x1, y1, x2, y2);
-    }
-
-    public void setNodes(LinkedList<Node> nodes){
-        this.nodes = nodes;
-    }
-
-    public void update(){
-        repaint();
     }
 }

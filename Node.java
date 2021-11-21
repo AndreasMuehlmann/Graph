@@ -22,23 +22,27 @@ public class Node{
     }
 
     public int giveColor(){
-        return color;
+        return this.color;
+    }
+
+    public void addEdge(Node node){
+        this.edges.add(node);
     }
 
     public void setEdges(LinkedList<Node> edges){
         this.edges = edges;
     }
 
-    public int giveIndex(){
-        return index;
+    public LinkedList<Node> giveEdges(){
+        return this.edges;
     }
 
-    public LinkedList<Node> giveEdges(){
-        return edges;
+    public int giveIndex(){
+        return this.index;
     }
 
     public Data giveData(){
-        return data;
+        return this.data;
     }
 
    //public int[] GivePosition(){
