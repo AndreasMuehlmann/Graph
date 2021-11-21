@@ -62,4 +62,8 @@ class MyPanel extends JPanel {
     public void setNodes(LinkedList<Node> nodes){
         this.nodes = nodes;
     }
+
+    public void update(){
+        repaint();
+    }
 }

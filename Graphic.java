@@ -34,6 +34,11 @@ public class Graphic extends JFrame{
     public Color[] giveColors(){
         return myPanel.colors;
     }
+
+    public void update(){
+        repaint();
+        myPanel.update();
+    }
 }
        
        

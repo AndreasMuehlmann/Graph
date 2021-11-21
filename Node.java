@@ -17,7 +17,7 @@ public class Node{
         this.edges = edges;
     }
 
-    public void ChangeColor(int color){
+    public void setColor(int color){
         this.color = color;
     }
 
@@ -44,8 +44,4 @@ public class Node{
    //public int[] GivePosition(){
    //    //return Position;
    //}
-}
-
-interface Data{
-    
 }
