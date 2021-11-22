@@ -43,7 +43,6 @@ public class Graph{
         //Have to figure out 
     }
 
-
     public void makeRandomNodes(int amount, int color, int radius){ // color -1 for colorful nodes
         Random random = new Random();   
         int startSize = nodes.size();
@@ -170,13 +169,13 @@ public class Graph{
 
     public void randomColoring(){ //colors random nodes randomly
         Random random = new Random();
-        for (int i = 0; i < nodes.size() * 2; i++){
+        for (int i = 0; i < 100; i++){
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ie) {
-                throw new UnsupportedOperationException("Interrupts not supported.", ie);
-            }
+           try {
+               Thread.sleep(50);
+           } catch (InterruptedException ie) {
+               throw new UnsupportedOperationException("Interrupts not supported.", ie);
+           }
 
             nodes.get(random.nextInt(nodes.size())).setColor(random.nextInt(5));
             update();

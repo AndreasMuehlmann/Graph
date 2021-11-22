@@ -1,12 +1,12 @@
 import java.util.*;
 
         // colors are mapped to numbers 
-        // 1 rot
-        // 2 orange
-        // 3 gelb
-        // 4 grün
-        // 5 blau
-        // 6 pink
+        // 0 rot
+        // 1 orange
+        // 2 gelb
+        // 3 grün
+        // 4 blau
+        // 5 pink
         // a number greater than 6 is always white
 
 
@@ -16,18 +16,18 @@ class Main
 
     public static void main(String args[])
     {
-        Graph graph = new Graph(new LinkedList<Node>(), 1200, 900, 2.0);
+        Graph graph = new Graph(new LinkedList<Node>(), 2400, 1300, 1.0);
 
-        //graph.standardNodes(1, 30);
+        graph.standardNodes(1, 30);
 
         graph.makeRandomNodes(10, -1, 30);
 
         LinkedList<Node> nodes = graph.giveNodes();
 
-       //graph.DFS(nodes.get(2), nodes.get(4), 10);
-       //graph.randomColoring();
+        graph.DFS(nodes.get(2), nodes.get(4), 10);
+        graph.randomColoring();
 
-        graph.DFS(nodes.get(1), nodes.get(2), 10);
+        graph.DFS(nodes.get(1), nodes.get(2), 0);
 
         try {
             Thread.sleep(5000);
