@@ -90,32 +90,33 @@ public class Graph{
 
 
         int[] edgesIndex0 = {4};
-        setUndirectedEdges(nodes.get(0), edgesIndex0);
+        setEdges(nodes.get(0), edgesIndex0, true);
 
         int[] edgesIndex1 = {0, 3};
-        setUndirectedEdges(nodes.get(1), edgesIndex1);
+        setEdges(nodes.get(1), edgesIndex1, false);
 
         int[] edgesIndex2 = {3, 5};
-        setUndirectedEdges(nodes.get(2), edgesIndex2);
+        setEdges(nodes.get(2), edgesIndex2, true);
 
         int[] edgesIndex3 = {0, 5};
-        setUndirectedEdges(nodes.get(3), edgesIndex3);
+        setEdges(nodes.get(3), edgesIndex3, false);
 
         int[] edgesIndex4 = {0,5};
-        setUndirectedEdges(nodes.get(4), edgesIndex4);
+        setEdges(nodes.get(4), edgesIndex4, false);
 
         int[] edgesIndex5 = {1};
-        setUndirectedEdges(nodes.get(5), edgesIndex5);
+        setEdges(nodes.get(5), edgesIndex5, false);
 
         update();
     }
 
-    public void setUndirectedEdges(Node node, int[] edgesIndex){
+    public void setEdges(Node node, int[] edgesIndex, boolean undirected){
         LinkedList<Node> edges = new LinkedList<Node> ();
 
         for (int edge : edgesIndex){
             edges.add(nodes.get(edge));
-            nodes.get(edge).addEdge(node);
+            if (undirected)
+                nodes.get(edge).addEdge(node);
         }
         node.setEdges(edges);
     }

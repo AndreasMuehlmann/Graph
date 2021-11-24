@@ -9,6 +9,7 @@ import java.util.*;
         // 5 pink
         // a number greater than 6 is always white
 
+//TODO: Sometimes no edges
 
 class Main
 {
