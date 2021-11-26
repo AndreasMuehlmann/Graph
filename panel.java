@@ -4,15 +4,20 @@ import java.util.*;
 
 class Panel extends JPanel {
 
+    Graphics2D g2d;
+
     LinkedList<Node> nodes;
     Color[] colors= {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.pink};
     int windowWidth;
     int windowHeight;
+    Color backGroundColor;
 
     public Panel(LinkedList<Node> nodes, int windowWidth, int windowHeight) {
         this.nodes = nodes;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+        backGroundColor = Color.white;
+        this.setBackground(backGroundColor);
     }
 
     public Dimension getPreferredSize() {
@@ -24,7 +29,7 @@ class Panel extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         
-        //g2d.setStroke(new BasicStroke(1));  this makes the line thicker     
+        g2d.setStroke(new BasicStroke(2));
 
         g2d.setRenderingHint(
         RenderingHints.KEY_ANTIALIASING,
@@ -53,20 +58,21 @@ class Panel extends JPanel {
     }
 
     private void drawNode(Graphics2D g2d, Node node){
-        Color original = g2d.getColor();
-        Color color = (node.color > 6) ? Color.white : colors[node.color];
-        g2d.setColor(color);
+        
+        g2d.setColor((node.nodeColor > 6) ? Color.white : colors[node.nodeColor]);
         g2d.fillOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
-        g2d.setColor(original);
 
+        g2d.setColor(Color.black);
         g2d.drawOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
 
-        
-        int widthString = String.valueOf(node.index).length();
-        g2d.drawString(String.valueOf(node.index), node.position[0] - widthString * 3, node.position[1] + 3);
+        int widthString = node.name.length();
+        g2d.drawString(String.valueOf(node.name), node.position[0] - widthString * 3, node.position[1] + 3);
     }
 
     private void drawEdge(Graphics2D g2d, Node from, Node to){
+        Color color = (from.edgeColors.get(to.name) != -1) ? colors[from.edgeColors.get(to.name)] : Color.black;
+        g2d.setColor(color);
+
         double deltaX = to.position[0] - from.position[0];
         double deltaY = to.position[1] - from.position[1];
 
@@ -74,7 +80,7 @@ class Panel extends JPanel {
 
         double angelLine = giveAngelLine(from, to);
 
-        int[] pointToDrawTo = givePoint(distance, angelLine, from);
+        int[] pointToDrawTo = givePointCuttingNode(distance, angelLine, from);
 
         g2d.drawLine(from.position[0], from.position[1], pointToDrawTo[0], pointToDrawTo[1]);
 
@@ -83,13 +89,13 @@ class Panel extends JPanel {
                 return;
             }
         }
-        int[][] pointsTriangle = giveTriangleForArrow(pointToDrawTo, 15.0, angelLine, Math.PI * 0.1, from);
+        int[][] pointsTriangle = giveTriangleForArrow(pointToDrawTo, 15.0, angelLine, Math.PI * 0.1);
 
         Polygon triangle = new Polygon();
         for (int[] point : pointsTriangle)
             triangle.addPoint(point[0], point[1]);
-        g2d.drawPolygon(triangle);
         g2d.fillPolygon(triangle);
+        g2d.drawPolygon(triangle);
     }
     
     private double giveAngelLine(Node from, Node to)
@@ -112,7 +118,7 @@ class Panel extends JPanel {
         return angel;
     }
 
-    private int[] givePoint(double distance, double angel, Node from){
+    private int[] givePointCuttingNode(double distance, double angel, Node from){
         double newDeltaX = Math.cos(angel) * distance; 
         double newDeltaY = Math.sin(angel) * distance;
 
@@ -124,29 +130,27 @@ class Panel extends JPanel {
         return point;
     }
 
-    private int[][] giveTriangleForArrow(int[] endLine, double lengthSide, double angelLine, double angelArrow, Node from)
+    private int[][] giveTriangleForArrow(int[] endLine, double lengthSide, double angelLine, double angelArrow)
     {
         double angel1 = Math.PI * 1.5 - angelLine + angelArrow;
         double angel2 = Math.PI * 1.5 - angelLine - angelArrow;
 
-        double x1 = Math.sin(angel1) * lengthSide;
-        double y1 = Math.cos(angel1) * lengthSide;
-
-        int[] point1 = new int[2];
-
-        point1[0] = (int) (endLine[0] + x1);
-        point1[1] = (int) (endLine[1] + y1);
-
-        int[] point2 = new int[2];
-
-        double x2 = Math.sin(angel2) * lengthSide;
-        double y2 = Math.cos(angel2) * lengthSide;
-
-        point2[0] = (int) (endLine[0] + x2);
-        point2[1] = (int) (endLine[1] + y2);
-
-        int[][] triangle = {point1, point2, endLine};
+        int[][] triangle = {calculatePointForArrow(endLine, lengthSide, angel1),
+             calculatePointForArrow(endLine, lengthSide, angel2), endLine};
 
         return triangle;
+    }
+
+    private int[] calculatePointForArrow(int[] endLine, double lengthSide, double angel)
+    {
+        double deltaX = Math.sin(angel) * lengthSide;
+        double deltaY = Math.cos(angel) * lengthSide;
+
+        int[] point = new int[2];
+
+        point[0] = (int) (endLine[0] + deltaX);
+        point[1] = (int) (endLine[1] + deltaY);
+
+        return point;
     }
 }

@@ -10,6 +10,9 @@ import java.util.*;
         // a number greater than 6 is always white
 
 //TODO: Sometimes no edges
+//TODO: arrange 
+//TODO: EdgeToNodeRatio not accurate
+//TODO: display Data in Node
 
 class Main
 {
@@ -21,14 +24,14 @@ class Main
 
         graph.standardNodes(1, 30);
 
-        graph.makeRandomNodes(10, -1, 30);
+        graph.makeGraph(15, -1, 30);
 
         LinkedList<Node> nodes = graph.giveNodes();
 
-        graph.DFS(nodes.get(2), nodes.get(4), 10);
-        graph.randomColoring();
+        graph.DFS(nodes.get(9), nodes.get(10), 10);
+        //graph.randomColoring();
 
-        graph.DFS(nodes.get(1), nodes.get(2), 0);
+        //graph.DFS(nodes.get(1), nodes.get(2), 0);
 
         try {
             Thread.sleep(5000);

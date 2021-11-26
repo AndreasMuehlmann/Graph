@@ -43,7 +43,43 @@ public class Graph{
         //Have to figure out 
     }
 
-    public void makeRandomNodes(int amount, int color, int radius){ // color -1 for colorful nodes
+    public void makeGraph(int amount, int color, int radius){ // color -1 for colorful nodes
+        Random random = new Random();
+        int startSize = nodes.size();
+
+        nodes.addAll(makeRandomNodes(amount, color, radius));
+        LinkedList<Node> edges = new LinkedList<Node>();
+        for (int j = startSize; j < amount + startSize; j++){
+            edges.clear();
+
+            int edgesAmount = (int) (random.nextInt(amount) * nodeToEdgeRatio);
+            for (int k = 0; k <  edgesAmount; k++){
+                edges.add(nodes.get(random.nextInt(nodes.size())));
+            }
+            nodes.get(j).setEdges(edges);
+        }
+    }
+
+    private LinkedList<Node> makeRandomNodes(int amount, int color, int radius){ // color -1 for colorful nodes
+        LinkedList<Node> newNodes = new LinkedList<Node>();
+        Random random = new Random();   
+        int startSize = newNodes.size();
+        boolean colorful = false;
+        if (color == -1)
+            colorful = true;
+
+        for (int i = 0; i < amount; i++){
+            if (colorful) 
+                color = random.nextInt(graphic.giveColors().length);
+            int[] position = {sideDistance + random.nextInt(windowWidth - sideDistance * 2), 
+                sideDistance + random.nextInt(windowHeight - sideDistance * 2)};
+
+            newNodes.add(new Node(Integer.toString(startSize + i), color, radius, position, new LinkedList<Node>()));
+        }
+        return newNodes;
+    }
+
+    public void makeTree(int amount, int color, int radius){ // color -1 for colorful nodes
         Random random = new Random();   
         int startSize = nodes.size();
         boolean colorful = false;
@@ -56,15 +92,16 @@ public class Graph{
             int[] position = {sideDistance + random.nextInt(windowWidth - sideDistance * 2), 
                 sideDistance + random.nextInt(windowHeight - sideDistance * 2)};
 
-            nodes.add(new Node(startSize + i, color, radius, position, new LinkedList<Node>()));
+            nodes.add(new Node(Integer.toString(startSize + i), color, radius, position, new LinkedList<Node>()));
         }
+
         LinkedList<Node> edges = new LinkedList<Node>();
         for (int j = startSize; j < amount + startSize; j++){
             edges.clear();
 
             int edgesAmount = (int) (random.nextInt(amount) * nodeToEdgeRatio);
             for (int k = 0; k <  edgesAmount; k++){
-                edges.add(nodes.get(random.nextInt(nodes.size())));
+                edges.add(nodes.get(random.nextInt(nodes.size() - j) + j));
             }
             nodes.get(j).setEdges(edges);
         }
@@ -81,12 +118,12 @@ public class Graph{
         int[] position4 = {600, 500};
         int[] position5 = {600, 300};
 
-        addNode(new Node(0, color, radius, position0, new LinkedList<Node> ()));
-        addNode(new Node(1, color, radius, position1 , new LinkedList<Node> ()));
-        addNode(new Node(2, color, radius, position2 , new LinkedList<Node> ()));
-        addNode(new Node(3, color, radius, position3 , new LinkedList<Node> ()));
-        addNode(new Node(4, color, radius, position4 , new LinkedList<Node> ()));
-        addNode(new Node(5, color, radius, position5 , new LinkedList<Node> ()));
+        addNode(new Node("Hello", color, radius, position0, new LinkedList<Node> ()));
+        addNode(new Node("Moin", color, radius, position1 , new LinkedList<Node> ()));
+        addNode(new Node("Bye", color, radius, position2 , new LinkedList<Node> ()));
+        addNode(new Node("servus", color, radius, position3 , new LinkedList<Node> ()));
+        addNode(new Node("4", color, radius, position4 , new LinkedList<Node> ()));
+        addNode(new Node("5", color, radius, position5 , new LinkedList<Node> ()));
 
 
         int[] edgesIndex0 = {4};
@@ -123,20 +160,34 @@ public class Graph{
 
     public LinkedList<Node> DFS(Node from, Node to, int color) //Depthfirstsearch animated and gives path
     {
-        LinkedList<Node> path = go(from, to, color, new LinkedList<Node>(), new boolean[nodes.size()]);
+        LinkedList<Node> path = go(from, to, color, new LinkedList<Node>(), booleanHashMapForNodes());
         print_path(path);
         return path;
     }
 
-    public LinkedList<Node> go(Node from, Node to, int color,  LinkedList<Node> path, boolean[] visited) // helperfunction for DFS
+    public LinkedList<Node> DFS(Node from, Node to, int color, HashMap<String, Boolean> visited) //You can set nodes you don't want to visit
+    {
+        LinkedList<Node> path = go(from, to, color, new LinkedList<Node>(), visited);
+        print_path(path);
+        return path;
+    }
+
+    public HashMap<String, Boolean> booleanHashMapForNodes(){
+        HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
+        for (Node node : nodes)
+            visited.put(node.name, false);
+        return visited;
+    }
+
+    public LinkedList<Node> go(Node from, Node to, int color,  LinkedList<Node> path, HashMap<String, Boolean> visited) // helperfunction for DFS
     {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ie) {
             throw new UnsupportedOperationException("Interrupts not supported.", ie);
         }
-        visited[from.index] = true;
-        from.setColor(color);
+        visited.put(from.name, true);
+        from.setNodeColor(color);
         update();
 
         LinkedList<Node> newPath = new LinkedList<Node>(path);
@@ -145,9 +196,9 @@ public class Graph{
         if (from == to)
             return newPath;
         
-        for (int i = 0; i < from.edges.size(); i++){
-            Node edge = from.edges.get(i);
-            if (visited[edge.index]) 
+        for (Node edge : from.edges){
+            from.setEdgeColor(edge.name, color);
+            if (visited.get(edge.name))
                 continue;
 
             newPath = go(edge, to, color, newPath, visited);
@@ -162,7 +213,7 @@ public class Graph{
     {
         System.out.println("path: ");
         for (int i = 0; i < path.size(); i++){
-            System.out.println(path.get(i).index);
+            System.out.println(path.get(i).name);
         }
         System.out.println("end\n");
     }
@@ -178,7 +229,7 @@ public class Graph{
                throw new UnsupportedOperationException("Interrupts not supported.", ie);
            }
 
-            nodes.get(random.nextInt(nodes.size())).setColor(random.nextInt(5));
+            nodes.get(random.nextInt(nodes.size())).setNodeColor(random.nextInt(5));
             update();
         }
     }

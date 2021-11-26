@@ -2,27 +2,38 @@ import java.util.*;
 
 public class Node{
 
-    int index;
-    int color;
+    String name;
+    int nodeColor;
     int radius;
     int[] position;
     LinkedList<Node> edges = new LinkedList<Node> ();
+    HashMap<String, Integer> edgeColors = new HashMap<String, Integer> ();
     Data data;
 
-    public Node(int index, int color, int radius, int[] position, LinkedList<Node> edges){
-        this.index = index;
-        this.color = color;
+    public Node(String name, int nodeColor, int radius, int[] position, LinkedList<Node> edges){
+        this.name = name;
+        this.nodeColor = nodeColor;
         this.radius = radius;
         this.position = position;
         this.edges = edges;
+        setEdgeColors ();
     }
 
-    public void setColor(int color){
-        this.color = color;
+    private void setEdgeColors(){
+        for (Node edge : edges)
+            edgeColors.put(edge.name, -1);
+    }
+
+    public void setEdgeColor(String nodeName, int color){
+        edgeColors.put(nodeName, color);
+    }
+
+    public void setNodeColor(int color){
+        this.nodeColor = color;
     }
 
     public int giveColor(){
-        return this.color;
+        return this.nodeColor;
     }
 
     public void addEdge(Node node){
@@ -37,15 +48,15 @@ public class Node{
         return this.edges;
     }
 
-    public int giveIndex(){
-        return this.index;
+    public String giveName(){
+        return this.name;
     }
 
     public Data giveData(){
         return this.data;
     }
 
-   //public int[] GivePosition(){
-   //    //return Position;
-   //}
+   public int[] givePosition(){
+       return position;
+   }
 }
