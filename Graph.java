@@ -1,17 +1,39 @@
 import java.util.*;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 public class Graph{
 
     Graphic graphic;
     LinkedList<Node> nodes = new LinkedList<Node>();
-    double nodeToEdgeRatio;
     int windowWidth;
     int windowHeight;
     int sideDistance;
 
-    public Graph(LinkedList<Node> nodes, int windowWidth, int windowHeight, double nodeToEdgeRatio){
+    public Graph(){
+        this.nodes = new LinkedList<Node>();
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.windowWidth = (int) (screenSize.width / 1.1);
+        this.windowHeight = (int) (screenSize.height / 1.1);
+
+        this.sideDistance = 50;
+        graphic = new Graphic(nodes, windowWidth, windowHeight);
+    }
+
+    public Graph(LinkedList<Node> nodes){
         this.nodes = nodes;
-        this.nodeToEdgeRatio = nodeToEdgeRatio; // could use some work because not accurate
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.windowWidth = screenSize.width;
+        this.windowHeight = screenSize.height;
+
+        this.sideDistance = 50;
+        graphic = new Graphic(nodes, windowWidth, windowHeight);
+    }
+
+    public Graph(LinkedList<Node> nodes, int windowWidth, int windowHeight){
+        this.nodes = nodes;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         this.sideDistance = 50;
@@ -51,11 +73,11 @@ public class Graph{
         nodes.add(Node);
     }
     
-    public void Arrange(){ // arranges nodes in a readable way
+    public void arrangeDirectedAcyclicGraph(){ // arranges nodes in a readable way
         //Have to figure out 
     }
 
-    public void makeGraph(int amount, Color color, int radius){ // color null for colorful nodes
+    public void makeGraph(int amount, Color color, int radius, double nodeToEdgeRatio){ // color null for colorful nodes
         Random random = new Random();
         int startSize = nodes.size();
 
@@ -86,7 +108,7 @@ public class Graph{
         return newNodes;
     }
 
-    public void makeDirectedAcyclicGraph(int amount, Color color, int radius){ 
+    public void makeDirectedAcyclicGraph(int amount, Color color, int radius, double nodeToEdgeRatio){ 
         Random random = new Random();   
         int startSize = nodes.size();
 
@@ -279,7 +301,6 @@ public class Graph{
 
            for (Node edge : node.edges.values()){
                 node.setEdgeColor(edge.name, giveRandomColor());
-                delay(delay);
                 update();
          
            }

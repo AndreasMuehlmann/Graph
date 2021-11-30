@@ -62,8 +62,6 @@ class Panel extends JPanel {
         g2d.fillOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
 
         g2d.setColor(Color.black);
-        g2d.drawOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
-
         int widthString = node.name.length();
         g2d.drawString(String.valueOf(node.name), node.position[0] - widthString * 3, node.position[1] + 3);
     }

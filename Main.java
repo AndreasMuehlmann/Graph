@@ -5,9 +5,7 @@ import java.awt.Color;
 //TODO: arrange 
 //TODO: EdgeToNodeRatio not accurate
 //TODO: display Data in Node
-//TODO: EdgeColors
-//TODO: DFS isn't animated right
-//TODO: Refactoring (make a diagramm for overview)
+//TODO: display edgeWeights
 
 
 class Main
@@ -16,13 +14,13 @@ class Main
 
     public static void main(String args[])
     {
-        Graph graph = new Graph(new LinkedList<Node>(), 2400, 1300, 0.5);
+        Graph graph = new Graph();
 
         //graph.standardNodes(Color.orange, 30);
 
-        graph.makeGraph(50, Color.white, 30);
+        //graph.makeGraph(50, Color.white, 30, 1.0);
 
-        //graph.makeDirectedAcyclicGraph(10, Color.white, 30);
+        graph.makeDirectedAcyclicGraph(10, Color.white, 30, 1.0);
 
         LinkedList<Node> nodes = graph.giveNodes();
 

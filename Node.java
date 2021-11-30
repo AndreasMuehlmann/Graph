@@ -34,7 +34,6 @@ public class Node{
             edge.setEdgeColor(this.name, color);
         }
     }
-    
 
     public void setNodeColor(Color color){
         this.color = color;
