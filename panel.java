@@ -7,7 +7,6 @@ class Panel extends JPanel {
     Graphics2D g2d;
 
     LinkedList<Node> nodes;
-    Color[] colors= {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.pink};
     int windowWidth;
     int windowHeight;
     Color backGroundColor;
@@ -16,7 +15,7 @@ class Panel extends JPanel {
         this.nodes = nodes;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
-        backGroundColor = Color.white;
+        backGroundColor = new Color(100, 100, 100);
         this.setBackground(backGroundColor);
     }
 
@@ -39,7 +38,7 @@ class Panel extends JPanel {
         RenderingHints.VALUE_TEXT_ANTIALIAS_ON); 
 
         for (Node node : nodes) {
-            for (Node edge : node.edges){
+            for (Node edge : node.edges.values()){
                 drawEdge(g2d, node, edge);
             }
         }
@@ -59,7 +58,7 @@ class Panel extends JPanel {
 
     private void drawNode(Graphics2D g2d, Node node){
         
-        g2d.setColor((node.nodeColor > 6) ? Color.white : colors[node.nodeColor]);
+        g2d.setColor(node.color);
         g2d.fillOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
 
         g2d.setColor(Color.black);
@@ -70,8 +69,7 @@ class Panel extends JPanel {
     }
 
     private void drawEdge(Graphics2D g2d, Node from, Node to){
-        Color color = (from.edgeColors.get(to.name) != -1) ? colors[from.edgeColors.get(to.name)] : Color.black;
-        g2d.setColor(color);
+        g2d.setColor(from.edgeColors.get(to.name));
 
         double deltaX = to.position[0] - from.position[0];
         double deltaY = to.position[1] - from.position[1];
@@ -84,7 +82,7 @@ class Panel extends JPanel {
 
         g2d.drawLine(from.position[0], from.position[1], pointToDrawTo[0], pointToDrawTo[1]);
 
-        for (Node edge : to.giveEdges()){
+        for (Node edge : to.edges.values()){
             if (from == edge){
                 return;
             }

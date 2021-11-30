@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.*;
 
 public class Graphic extends JFrame{
@@ -34,10 +33,6 @@ public class Graphic extends JFrame{
 
     public void setNodes(LinkedList<Node> nodes){
         Panel.setNodes(nodes);
-    }
-
-    public Color[] giveColors(){
-        return Panel.colors;
     }
 }
        

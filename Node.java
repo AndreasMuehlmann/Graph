@@ -1,50 +1,64 @@
 import java.util.*;
+import java.awt.Color;
 
 public class Node{
 
     String name;
-    int nodeColor;
+    Color color;
     int radius;
     int[] position;
-    LinkedList<Node> edges = new LinkedList<Node> ();
-    HashMap<String, Integer> edgeColors = new HashMap<String, Integer> ();
+    HashMap<String, Node> edges = new HashMap<String, Node> ();
+    HashMap<String, Color> edgeColors = new HashMap<String, Color> ();
     Data data;
 
-    public Node(String name, int nodeColor, int radius, int[] position, LinkedList<Node> edges){
+    public Node(String name, Color color, int radius, int[] position, HashMap<String, Node> edges){
         this.name = name;
-        this.nodeColor = nodeColor;
+        this.color = color;
         this.radius = radius;
         this.position = position;
         this.edges = edges;
-        setEdgeColors ();
+        setEdgeColors(Color.black);
     }
 
-    private void setEdgeColors(){
-        for (Node edge : edges)
-            edgeColors.put(edge.name, -1);
+    public void setEdgeColors(Color color){
+        for (Node edge : edges.values())
+            edgeColors.put(edge.name, color);
     }
 
-    public void setEdgeColor(String nodeName, int color){
-        edgeColors.put(nodeName, color);
+    public void setEdgeColor(String edgeName, Color color){
+        edgeColors.put(edgeName, color);
+
+        Node edge = edges.get(edgeName);
+        Node edgeOfEdge = edge.edges.get(this.name);
+        if (edgeOfEdge != null && edge.giveEdgeColor(this.name) != giveEdgeColor(edgeName)){
+            edge.setEdgeColor(this.name, color);
+        }
+    }
+    
+
+    public void setNodeColor(Color color){
+        this.color = color;
     }
 
-    public void setNodeColor(int color){
-        this.nodeColor = color;
+    public Color giveNodeColor(){
+        return this.color;
     }
 
-    public int giveColor(){
-        return this.nodeColor;
+    public Color giveEdgeColor(String edgeName){
+        return edgeColors.get(edgeName);
     }
 
-    public void addEdge(Node node){
-        this.edges.add(node);
+    public void addEdge(Node edge){
+        this.edges.put(edge.name, edge);
+        setEdgeColor(edge.name, Color.black);
     }
 
-    public void setEdges(LinkedList<Node> edges){
-        this.edges = edges;
+    public void setEdges(HashMap<String, Node>edges){
+        this.edges = new HashMap<String, Node>(edges);
+        setEdgeColors(Color.black);
     }
 
-    public LinkedList<Node> giveEdges(){
+    public HashMap<String, Node> getEdges(){
         return this.edges;
     }
 
