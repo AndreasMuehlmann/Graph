@@ -4,7 +4,6 @@ import java.awt.Color;
 //TODO: Sometimes no edges
 //TODO: arrange 
 //TODO: EdgeToNodeRatio not accurate
-//TODO: display Data in Node
 //TODO: display edgeWeights
 
 
@@ -19,12 +18,11 @@ class Main
         //graph.standardNodes(Color.orange, 30);
 
         //graph.makeGraph(50, Color.white, 30, 1.0);
-
-        graph.makeDirectedAcyclicGraph(10, Color.white, 30, 1.0);
-
+        graph.makeTree(50, 2, Color.white, 30);
+        
         LinkedList<Node> nodes = graph.giveNodes();
 
-        graph.DFS(nodes.get(4), nodes.get(6), Color.blue, 0.5);
+        graph.DFSAnimated(nodes.get(0), nodes.get(7), Color.blue, 0.05);
         graph.delay(2);
 
         graph.randomColoring(0.01);
@@ -32,7 +30,7 @@ class Main
         graph.setNodeColors(Color.white);
 
 
-        graph.DFS(nodes.get(1), nodes.get(4), Color.blue, 1);
+        graph.DFSAnimated(nodes.get(0), nodes.get(9), Color.blue, 1);
 
         graph.delay(5);
         System.exit(0);

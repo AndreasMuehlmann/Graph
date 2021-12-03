@@ -73,8 +73,15 @@ public class Graph{
         nodes.add(Node);
     }
     
-    public void arrangeDirectedAcyclicGraph(){ // arranges nodes in a readable way
-        //Have to figure out 
+    public void arrangeTree(){ // arranges nodes in a readable way
+        LinkedList<Node> topOrdering = topologicalSort();
+        LinkedList<Node> layer = new LinkedList<Node>();
+        LinkedList<Node> nextLayer = new LinkedList<Node>();
+        layer.add(topOrdering.get(0));
+        int height = sideDistance; 
+        int width = sideDistance;
+        for (Node node : layer){
+        }
     }
 
     public void makeGraph(int amount, Color color, int radius, double nodeToEdgeRatio){ // color null for colorful nodes
@@ -132,6 +139,49 @@ public class Graph{
             nodes.get(j).setEdges(edges);
         }
         update();
+    }
+
+    public void makeTree(int amount, int maxEdgeAmount, Color color, int radius){ 
+        Random random = new Random();   
+
+        assert(maxEdgeAmount > 0);
+        
+        LinkedList<Node> newNodes = makeRandomNodes(amount, color, radius);
+
+        nodes.addAll(newNodes);
+
+        Node root = newNodes.get(0);
+        newNodes.remove(0);
+        makeTreeHelper(newNodes, root, maxEdgeAmount, random);
+
+        update();
+    }
+
+    private void makeTreeHelper(LinkedList<Node> nodes, Node node, int maxEdgeAmount, Random random)
+    {
+        HashMap<String, Node> edges = new HashMap<String, Node>();
+        
+        if (maxEdgeAmount > nodes.size())
+            maxEdgeAmount = nodes.size();
+
+        if (maxEdgeAmount == 0)
+            return;
+
+        int edgesAmount = (int) ((random.nextInt(maxEdgeAmount + 1)));
+        if (edgesAmount == 0 && !nodes.isEmpty())
+            edgesAmount = 1;
+
+        for (int i = 0; i <  edgesAmount; i++){
+
+            int edgeIndex = random.nextInt(nodes.size());
+            Node edge = nodes.get(edgeIndex);
+            edges.put(edge.name, edge);
+            nodes.remove(edgeIndex);
+        }
+        node.setEdges(edges);
+
+        for (Node edge : node.edges.values())
+            makeTreeHelper(nodes, edge, maxEdgeAmount, random);
     }
 
     private boolean isInEdges(HashMap<String, Node> edges, Node searchedEdge)
@@ -193,18 +243,40 @@ public class Graph{
         }
         node.setEdges(edges);
     }
-
-    public LinkedList<Node> DFS(Node from, Node to, Color color, double delay) //Depthfirstsearch animated and gives path
+    
+    public LinkedList<Node> topologicalSort()
     {
-        LinkedList<Node> path = helperDFS(from, to, color, new LinkedList<Node>(), booleanHashMapForNodes(), delay);
-        print_path(path);
-        return path;
+        HashMap<String, Boolean> visited = booleanHashMapForNodes();
+        LinkedList<Node> topOrdering = new LinkedList<Node> ();
+
+        for (Node node : nodes){
+            if (visited.get(node.name) == false)
+                topDFS(node, topOrdering, visited);
+        }
+        return topOrdering;
     }
 
-    public LinkedList<Node> DFS(Node from, Node to, Color color, HashMap<String, Boolean> visited, double delay) //You can set nodes you don't want to visit
+    public void topDFS(Node from,  LinkedList<Node> topOrdering, HashMap<String, Boolean> visited) // helperfunction for DFS
     {
-        LinkedList<Node> path = helperDFS(from, to, color, new LinkedList<Node>(), visited, delay);
-        print_path(path);
+        visited.put(from.name, true);
+
+        for (Node edge : from.edges.values()){
+            if (visited.get(edge.name)){
+                continue;
+            }
+
+            topDFS(edge, topOrdering, visited);
+        }
+
+        topOrdering.addFirst(from);
+        return;
+    }
+
+
+    public LinkedList<Node> DFSAnimated(Node from, Node to, Color color, double delay) //Depthfirstsearch animated and gives path
+    {
+        LinkedList<Node> path = helperDFSAnimated(from, to, color, new LinkedList<Node>(), booleanHashMapForNodes(), delay);
+        printPath(path);
         return path;
     }
 
@@ -215,7 +287,7 @@ public class Graph{
         return visited;
     }
 
-    public LinkedList<Node> helperDFS(Node from, Node to, Color color,  LinkedList<Node> path, HashMap<String, Boolean> visited, double delay) // helperfunction for DFS
+    public LinkedList<Node> helperDFSAnimated(Node from, Node to, Color color,  LinkedList<Node> path, HashMap<String, Boolean> visited, double delay) // animated helperfunction for DFS 
     {
         visited.put(from.name, true);
         delay(delay);
@@ -245,7 +317,7 @@ public class Graph{
                 continue;
             }
 
-            newPath = helperDFS(edge, to, color, newPath, visited, delay);
+            newPath = helperDFSAnimated(edge, to, color, newPath, visited, delay);
 
             if (newPath.size() != 0 && newPath.get(newPath.size() - 1) == to){
 
@@ -280,7 +352,7 @@ public class Graph{
         }
     }
 
-    private void print_path(LinkedList<Node> path) 
+    public void printPath(LinkedList<Node> path) 
     {
         System.out.println("path: ");
         for (int i = 0; i < path.size(); i++){
@@ -292,7 +364,7 @@ public class Graph{
 
     public void randomColoring(double delay){ //colors random nodes randomly
         Random random = new Random();
-        for (int i = 0; i < (1 / delay); i++){
+        for (int i = 0; i < (5 / delay); i++){
 
             delay(delay);
 

@@ -27,8 +27,9 @@ class Panel extends JPanel {
         super.paintComponent(g);       
 
         Graphics2D g2d = (Graphics2D) g;
-        
-        g2d.setStroke(new BasicStroke(2));
+
+        if (nodes.size() < 40)        
+            g2d.setStroke(new BasicStroke(2));
 
         g2d.setRenderingHint(
         RenderingHints.KEY_ANTIALIASING,

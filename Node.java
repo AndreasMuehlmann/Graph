@@ -57,7 +57,7 @@ public class Node{
         setEdgeColors(Color.black);
     }
 
-    public HashMap<String, Node> getEdges(){
+    public HashMap<String, Node> giveEdges(){
         return this.edges;
     }
 
