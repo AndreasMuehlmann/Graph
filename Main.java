@@ -2,9 +2,9 @@ import java.util.*;
 import java.awt.Color;
 
 //TODO: Sometimes no edges
-//TODO: arrange 
 //TODO: EdgeToNodeRatio not accurate
 //TODO: display edgeWeights
+//TODO: arangeTree: fromula for radius make better
 
 
 class Main
@@ -18,9 +18,11 @@ class Main
         //graph.standardNodes(Color.orange, 30);
 
         //graph.makeGraph(50, Color.white, 30, 1.0);
-        graph.makeTree(50, 2, Color.white, 30);
-        
         LinkedList<Node> nodes = graph.giveNodes();
+        graph.makeTree(50, 2, Color.white, 30);
+        graph.arrangeTree();
+        graph.delay(1);
+
 
         graph.DFSAnimated(nodes.get(0), nodes.get(7), Color.blue, 0.05);
         graph.delay(2);

@@ -69,7 +69,17 @@ public class Node{
         return this.data;
     }
 
+    public void setPosition(int x, int y){
+        position[0] = x;
+        position[1] = y;
+    }
+
    public int[] givePosition(){
        return position;
+   }
+
+   public void setRadius(int radius)
+   {
+       this.radius = radius;
    }
 }
