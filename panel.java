@@ -63,8 +63,11 @@ class Panel extends JPanel {
         g2d.fillOval(node.position[0] - node.radius, node.position[1] - node.radius, node.radius * 2, node.radius * 2);
 
         g2d.setColor(Color.black);
-        int widthString = node.name.length();
-        g2d.drawString(String.valueOf(node.name), node.position[0] - widthString * 3, node.position[1] + 3);
+
+        Font  font  = new Font(Font.SANS_SERIF, Font.PLAIN,  (int) (node.radius / 1.5));
+        g2d.setFont(font);
+        FontMetrics metrics = g2d.getFontMetrics(font);
+        g2d.drawString(String.valueOf(node.name), node.position[0] - metrics.stringWidth(node.name) / 2, node.position[1] + metrics.getHeight() / 4);
     }
 
     private void drawEdge(Graphics2D g2d, Node from, Node to){
@@ -86,7 +89,7 @@ class Panel extends JPanel {
                 return;
             }
         }
-        int[][] pointsTriangle = giveTriangleForArrow(pointToDrawTo, 15.0, angelLine, Math.PI * 0.1);
+        int[][] pointsTriangle = giveTriangleForArrow(pointToDrawTo, to.radius / 1.5, angelLine, Math.PI * 0.1);
 
         Polygon triangle = new Polygon();
         for (int[] point : pointsTriangle)

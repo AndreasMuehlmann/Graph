@@ -18,8 +18,6 @@ public class Graphic extends JFrame{
     }
     
     private void createAndShowGraph() {
-        System.out.println("Created GUI on EDT? "+
-        SwingUtilities.isEventDispatchThread());
         JFrame frame = new JFrame("graphgraph");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(Panel);

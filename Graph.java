@@ -72,112 +72,7 @@ public class Graph{
     public void addNode(Node Node){
         nodes.add(Node);
     }
-    
-    public void arrangeTree(){ // arranges nodes in a readable way
 
-        //fix topsort
-        //LinkedList<Node> topOrdering = topologicalSort();
-        LinkedList<Node> layer = new LinkedList<Node>();
-        LinkedList<Node> nextLayer = new LinkedList<Node>();
-        int maxRadius = 30;
-
-        //Node root = topOrdering.get(0);
-        Node root = nodes.get(0);
-        if (root.edges.isEmpty())
-            System.out.println("wtf");
-
-        nextLayer.add(root);
-
-        int[] depthAndBreadth = giveMaxDepthWidth(root);
-        int maxDepth = depthAndBreadth[0];
-        int maxBreadth = depthAndBreadth[1];
-
-        double breadthFaktorDistanceBetweenNodes = 1;
-        double depthFaktorDistanceBetweenNodes = 1.5;
-
-        boolean fromTop = (maxDepth * depthFaktorDistanceBetweenNodes >= maxBreadth * breadthFaktorDistanceBetweenNodes) ? false : true;
-
-        int breadthMaxDistance = (fromTop) ? windowWidth - 2 * sideDistance: windowHeight - 2 * sideDistance;
-        int breadthCenter = (fromTop) ? windowWidth / 2 : windowHeight / 2;
-
-        int depthMaxDistance = (fromTop) ? windowHeight - 2 * sideDistance : windowWidth - 2 * sideDistance;
-
-        int breadthMaxRadiusNodes = calculateFittingNodeRadius(breadthFaktorDistanceBetweenNodes, breadthMaxDistance, maxBreadth);
-        int depthMaxRadiusNodes = calculateFittingNodeRadius(depthFaktorDistanceBetweenNodes, depthMaxDistance, maxDepth);
-
-        int radiusNodes = (breadthMaxRadiusNodes > depthMaxRadiusNodes) ? depthMaxRadiusNodes : breadthMaxRadiusNodes;
-        radiusNodes = (radiusNodes > maxRadius) ? maxRadius : radiusNodes;
-
-        int breadthDistanceBetweenNodes = (int) (radiusNodes * breadthFaktorDistanceBetweenNodes + 2 * radiusNodes);
-        int depthDistanceBetweenNodes = (int) (radiusNodes * depthFaktorDistanceBetweenNodes + 2 * radiusNodes);
-        
-        int breadth;
-        int depth = 0;
-
-        while (!nextLayer.isEmpty()){
-            layer = new LinkedList<Node>(nextLayer);
-            nextLayer.clear();
-
-            breadth = breadthCenter - (breadthDistanceBetweenNodes * (layer.size() - 1) / 2);
-            depth += depthDistanceBetweenNodes;
-
-            for (Node node : layer){
-                if (fromTop){
-                    node.setPosition(breadth, depth);   
-                }else{
-                    node.setPosition(depth, breadth);   
-                }
-                node.setRadius(radiusNodes);
-                breadth += breadthDistanceBetweenNodes;
-
-                for (Node edge : node.edges.values())
-                    nextLayer.add(edge);
-            }
-        }
-        update();
-    }
-
-    private int calculateFittingNodeRadius(double faktorDistanceBetweenNodes, int maxDistance, int length)
-    {
-        /*
-        mathematical equation
-        maxDistance = maxLayerSize * 2 * radiusNodes + (maxLayerSize - 1) *  distanceBetweenNodes 
-        distanceBetweenNodes = faktor * radiusNodes
-        => maxDistance = maxLayerSize * 2 * radiusNodes + (maxLayerSize - 1) *  (faktor * radiusNodes)
-        => maxDistance = radiusNodes (maxLayerSize * 2 + (maxLayerSize - 1) * faktor) | /(2 * maxLayerSize + (maxLayerSize - 1) * faktor)
-        => radiusNodes = maxDistance / (2 * maxLayerSize + (maxLayerSize - 1) * faktor)
-
-        => 
-        */
-
-        int radiusNodes = (int) (maxDistance / (2 * length + (length - 1) * faktorDistanceBetweenNodes));
-        return radiusNodes;
-    }
-
-
-    private int[] giveMaxDepthWidth (Node root)
-    {
-        LinkedList<Node> layer = new LinkedList<Node>();
-        LinkedList<Node> nextLayer = new LinkedList<Node>();
-        int maxLayerSize = 0;
-        int amoutLayers = 0;
-
-        nextLayer.add(root);
-
-        while (!nextLayer.isEmpty()){
-            layer = new LinkedList<Node>(nextLayer);
-            amoutLayers += 1;
-            maxLayerSize = (layer.size() > maxLayerSize) ? layer.size() : maxLayerSize;
-            nextLayer.clear();
-
-            for (Node node : layer){
-                for (Node edge : node.edges.values())
-                    nextLayer.add(edge);
-            }
-        }
-        int[] DepthWidth = {amoutLayers, maxLayerSize};
-        return DepthWidth;
-    }
 
     public void makeGraph(int amount, Color color, int radius, double nodeToEdgeRatio){ // color null for colorful nodes
         Random random = new Random();
@@ -196,18 +91,6 @@ public class Graph{
             nodes.get(j).setEdges(edges);
         }
         update();
-    }
-
-    private LinkedList<Node> makeRandomNodes(int amount, Color color, int radius){ 
-        LinkedList<Node> newNodes = new LinkedList<Node>();
-        Random random = new Random();   
-        int startSize = newNodes.size();
-        for (int i = 0; i < amount; i++){
-            int[] position = {sideDistance + random.nextInt(windowWidth - sideDistance * 2), 
-                sideDistance + random.nextInt(windowHeight - sideDistance * 2)};
-            newNodes.add(new Node(Integer.toString(startSize + i), (color == null) ? giveRandomColor() : color, radius, position, new HashMap<String, Node>()));
-        }
-        return newNodes;
     }
 
     public void makeDirectedAcyclicGraph(int amount, Color color, int radius, double nodeToEdgeRatio){ 
@@ -234,6 +117,14 @@ public class Graph{
             nodes.get(j).setEdges(edges);
         }
         update();
+    }
+
+    private boolean isInEdges(HashMap<String, Node> edges, Node searchedEdge)
+    {
+        for (Node edge : edges.values())
+            if (edge == searchedEdge)
+                return true;
+        return false;
     }
 
     public void makeTree(int amount, int maxEdgeAmount, Color color, int radius){ 
@@ -282,12 +173,16 @@ public class Graph{
         update();
     }
 
-    private boolean isInEdges(HashMap<String, Node> edges, Node searchedEdge)
-    {
-        for (Node edge : edges.values())
-            if (edge == searchedEdge)
-                return true;
-        return false;
+    private LinkedList<Node> makeRandomNodes(int amount, Color color, int radius){ 
+        LinkedList<Node> newNodes = new LinkedList<Node>();
+        Random random = new Random();   
+        int startSize = newNodes.size();
+        for (int i = 0; i < amount; i++){
+            int[] position = {sideDistance + random.nextInt(windowWidth - sideDistance * 2), 
+                sideDistance + random.nextInt(windowHeight - sideDistance * 2)};
+            newNodes.add(new Node(Integer.toString(startSize + i), (color == null) ? giveRandomColor() : color, radius, position, new HashMap<String, Node>()));
+        }
+        return newNodes;
     }
 
     public void standardNodes(Color color, int radius){
@@ -301,12 +196,12 @@ public class Graph{
         int[] position4 = {600, 500};
         int[] position5 = {600, 300};
 
-        addNode(new Node("Hello", color, radius, position0, new HashMap<String, Node> ()));
-        addNode(new Node("Moin", color, radius, position1 , new  HashMap<String, Node>()));
-        addNode(new Node("Bye", color, radius, position2 , new HashMap<String, Node> ()));
-        addNode(new Node("servus", color, radius, position3 , new HashMap<String, Node> ()));
-        addNode(new Node("4", color, radius, position4 , new HashMap<String, Node> ()));
-        addNode(new Node("5", color, radius, position5 , new HashMap<String, Node> ()));
+        addNode(new Node("1", color, radius, position0, new HashMap<String, Node> ()));
+        addNode(new Node("2", color, radius, position1 , new  HashMap<String, Node>()));
+        addNode(new Node("3", color, radius, position2 , new HashMap<String, Node> ()));
+        addNode(new Node("4", color, radius, position3 , new HashMap<String, Node> ()));
+        addNode(new Node("5", color, radius, position4 , new HashMap<String, Node> ()));
+        addNode(new Node("6", color, radius, position5 , new HashMap<String, Node> ()));
 
 
         int[] edgesIndex0 = {4};
@@ -330,6 +225,7 @@ public class Graph{
         update();
     }
 
+
     public void setEdges(Node node, int[] edgesIndex, boolean undirected){
         HashMap<String, Node> edges = new HashMap<String, Node> ();
 
@@ -342,6 +238,53 @@ public class Graph{
         node.setEdges(edges);
     }
     
+    public void arrangeTree()
+    {
+        int radius = 20;
+
+        double breadthFaktorDist = 3;
+        int breadthDist = (int) (2 * radius + breadthFaktorDist * radius);
+
+        double depthFaktorDist = 3;
+        int depthDist = (int) (2 * radius + depthFaktorDist * radius);
+
+        boolean fromTop = true;
+
+        LinkedList<Node> topOrdering = topologicalSort();
+        Node root = topOrdering.get(0);
+        root.setPosition(windowWidth / 2, depthDist);
+
+        int[][] Dists = giveMaxDists(root, radius, breadthDist, depthDist, 0);
+        int breadthMaxDist = Dists[0][0];
+        int depthMaxDist = Dists[0][1];
+
+        //remove this
+        positionNodes(root, radius, breadthDist, depthDist, fromTop);
+
+        boolean newFromTop = breadthMaxDist >= depthMaxDist;
+        
+        double breadthRadius = scaling((newFromTop) ? windowWidth : windowHeight, breadthMaxDist, radius, breadthFaktorDist);
+        double depthRadius = scaling((newFromTop) ? windowHeight: windowWidth, depthMaxDist, radius, depthFaktorDist);
+
+        int newRadius = (breadthRadius < depthRadius) ? (int) (breadthRadius) : (int) (depthRadius);
+
+        if (newRadius >= radius && newFromTop == fromTop){
+            update();
+            return;
+        }
+        
+        radius = newRadius;
+        fromTop = newFromTop;
+        breadthDist = (int) (breadthFaktorDist * breadthRadius);
+        depthDist = (int) (depthFaktorDist * depthRadius);
+        
+        if (!fromTop)
+            root.setPosition(depthDist, windowHeight / 2);
+        positionNodes(root, radius, breadthDist, depthDist, fromTop);
+
+        update();
+    }
+
     public LinkedList<Node> topologicalSort()
     {
         HashMap<String, Boolean> visited = booleanHashMapForNodes();
@@ -352,6 +295,13 @@ public class Graph{
                 topDFS(node, topOrdering, visited);
         }
         return topOrdering;
+    }
+
+    public HashMap<String, Boolean> booleanHashMapForNodes(){
+        HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
+        for (Node node : nodes)
+            visited.put(node.name, false);
+        return visited;
     }
 
     public void topDFS(Node from,  LinkedList<Node> topOrdering, HashMap<String, Boolean> visited) // helperfunction for DFS
@@ -370,110 +320,66 @@ public class Graph{
         return;
     }
 
-
-    public LinkedList<Node> DFSAnimated(Node from, Node to, Color color, double delay) //Depthfirstsearch animated and gives path
+    private int[][] giveMaxDists(Node root, int radius, int breadthDist, int depthDist, int totalDepth)
     {
-        LinkedList<Node> path = helperDFSAnimated(from, to, color, new LinkedList<Node>(), booleanHashMapForNodes(), delay);
-        printPath(path);
-        return path;
-    }
+        totalDepth += depthDist;
+        int maxTotalDepth = totalDepth;
 
-    public HashMap<String, Boolean> booleanHashMapForNodes(){
-        HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
-        for (Node node : nodes)
-            visited.put(node.name, false);
-        return visited;
-    }
+        int root_total_breadth = 0;
+        int[] totalBreadths = new int[root.edges.size()];
 
-    public LinkedList<Node> helperDFSAnimated(Node from, Node to, Color color,  LinkedList<Node> path, HashMap<String, Boolean> visited, double delay) // animated helperfunction for DFS 
-    {
-        visited.put(from.name, true);
-        delay(delay);
-        from.setNodeColor(color);
-        update();
+        int i = 0;
+        for (Node edge : root.edges.values()){
+            int[][] Dists = giveMaxDists(edge, radius, breadthDist, depthDist, totalDepth);
+            maxTotalDepth = (Dists[0][1] < maxTotalDepth) ? maxTotalDepth : Dists[0][1];
 
-        LinkedList<Node> newPath = new LinkedList<Node>(path);
-        newPath.add(from);
-
-        if (from == to){
-
-            delay(delay);
-            to.setNodeColor(Color.green);
-            return newPath;
-        }
-        
-        for (Node edge : from.edges.values()){
-
-            delay(delay);
-            from.setEdgeColor(edge.name, color);
-            update();
-
-            if (visited.get(edge.name)){
-                delay(delay);
-                from.setEdgeColor(edge.name, Color.red);
-                update();
-                continue;
-            }
-
-            newPath = helperDFSAnimated(edge, to, color, newPath, visited, delay);
-
-            if (newPath.size() != 0 && newPath.get(newPath.size() - 1) == to){
-
-                delay(delay);
-                from.setEdgeColor(edge.name, Color.green);
-                update();
-
-                delay(delay);
-                from.setNodeColor(Color.green);
-                update();
-                return newPath;
-            }
-
-            delay(delay);
-            from.setEdgeColor(edge.name, Color.orange);
-            update();
+            totalBreadths[i] = Dists[0][0];
+            root_total_breadth += Dists[0][0];
+            i++;
         }
 
-        delay(delay);
-        from.setNodeColor(Color.orange);
-        update();
+        if (root.edges.size() == 0)
+            root_total_breadth += breadthDist;
 
-        return new LinkedList<Node>();
+        int[] bdMaxDists = {root_total_breadth, maxTotalDepth}; 
+        int[][] Dists = {bdMaxDists, totalBreadths};
+        return  Dists;
     }
 
-    public void delay(double seconds)
+    private double scaling(int windowSize, int maxDist, int oldRadius, double faktorDist)
     {
-        try {
-            Thread.sleep((int) (seconds * 1000));
-        } catch (InterruptedException ie) {
-            throw new UnsupportedOperationException("Interrupts not supported.", ie);
-        }
+        double newRadius = (windowSize * oldRadius) / maxDist;
+        return newRadius;
     }
 
-    public void printPath(LinkedList<Node> path) 
+    private void positionNodes(Node root, int radius, int breadthDist, int depthDist, boolean fromTop)
     {
-        System.out.println("path: ");
-        for (int i = 0; i < path.size(); i++){
-            System.out.println(path.get(i).name);
+        int breadth;
+        int depth;
+        root.setRadius(radius);
+        if (fromTop){
+            breadth = root.position[0];
+            depth = root.position[1];
         }
-        System.out.println("end\n");
-    }
+        else{
+            breadth = root.position[1];
+            depth = root.position[0];
+        }
+        int[][] dists = giveMaxDists(root, radius, breadthDist, depthDist, 0);
 
+        breadth -= dists[0][0] / 2;
 
-    public void randomColoring(double delay){ //colors random nodes randomly
-        Random random = new Random();
-        for (int i = 0; i < (5 / delay); i++){
+        int i = 0;
+        for (Node edge : root.edges.values()){
+            breadth += dists[1][i] / 2;
+            if (fromTop)
+                edge.setPosition(breadth , depth + depthDist);
+            else
+                edge.setPosition(depth + depthDist , breadth);
+            breadth += dists[1][i] / 2;
 
-            delay(delay);
-
-            Node node = nodes.get(random.nextInt(nodes.size()));
-            node.setNodeColor(giveRandomColor());
-
-           for (Node edge : node.edges.values()){
-                node.setEdgeColor(edge.name, giveRandomColor());
-                update();
-         
-           }
+            positionNodes(edge, radius, breadthDist, depthDist, fromTop);
+            i++;
         }
     }
 }
