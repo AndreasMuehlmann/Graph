@@ -133,44 +133,32 @@ public class Graph{
         assert(maxEdgeAmount > 0);
         
         LinkedList<Node> newNodes = makeRandomNodes(amount, color, radius);
-        HashMap<String, Node> edges = new HashMap<String, Node>();
 
         nodes.addAll(newNodes);
 
-        LinkedList<Node> queue = new LinkedList<Node>();
+        LinkedList<Node> tree = new LinkedList<Node>();
 
         Node root = newNodes.get(0);
         newNodes.remove(0);
-        queue.add(root);
+        tree.add(root);
 
-        while (!queue.isEmpty())
-        {
-            edges.clear();
-            Node node = queue.pop();
-        
-            if (maxEdgeAmount > newNodes.size())
-                maxEdgeAmount = newNodes.size();
+        while (true){
+            if (newNodes.size() == 0)
+                break;
 
-            int edgesAmount = (int) ((random.nextInt(maxEdgeAmount + 1)));
-            if (edgesAmount == 0)
-                edgesAmount = 1;
+            Node appendTo = tree.get(random.nextInt(tree.size()));
+            if (appendTo.edges.size() >= maxEdgeAmount)
+                continue;
 
-            for (int i = 0; i <  edgesAmount; i++){
-                if (newNodes.size() ==  0)
-                    break;
+            int index = random.nextInt(newNodes.size());
+            Node appended = newNodes.get(index);
+            newNodes.remove(index);
 
-                int edgeIndex = random.nextInt(newNodes.size());
-                Node edge = newNodes.get(edgeIndex);
-                edges.put(edge.name, edge);
-                newNodes.remove(edgeIndex);
-            }
-
-            node.setEdges(edges);
-
-            for (Node edge : node.edges.values())
-                queue.add(edge);
+            appendTo.addEdge(appended);
+            tree.add(appended);
         }
         update();
+        return;
     }
 
     private LinkedList<Node> makeRandomNodes(int amount, Color color, int radius){ 
@@ -184,47 +172,6 @@ public class Graph{
         }
         return newNodes;
     }
-
-    public void standardNodes(Color color, int radius){
-
-        setNodes(new LinkedList<Node> ());
-
-        int[] position0 = {200, 500};
-        int[] position1 = {200, 300};
-        int[] position2 = {400, 600};
-        int[] position3 = {400, 200};
-        int[] position4 = {600, 500};
-        int[] position5 = {600, 300};
-
-        addNode(new Node("1", color, radius, position0, new HashMap<String, Node> ()));
-        addNode(new Node("2", color, radius, position1 , new  HashMap<String, Node>()));
-        addNode(new Node("3", color, radius, position2 , new HashMap<String, Node> ()));
-        addNode(new Node("4", color, radius, position3 , new HashMap<String, Node> ()));
-        addNode(new Node("5", color, radius, position4 , new HashMap<String, Node> ()));
-        addNode(new Node("6", color, radius, position5 , new HashMap<String, Node> ()));
-
-
-        int[] edgesIndex0 = {4};
-        setEdges(nodes.get(0), edgesIndex0, true);
-
-        int[] edgesIndex1 = {0, 3};
-        setEdges(nodes.get(1), edgesIndex1, false);
-
-        int[] edgesIndex2 = {3, 5};
-        setEdges(nodes.get(2), edgesIndex2, true);
-
-        int[] edgesIndex3 = {0, 5};
-        setEdges(nodes.get(3), edgesIndex3, false);
-
-        int[] edgesIndex4 = {0,5};
-        setEdges(nodes.get(4), edgesIndex4, false);
-
-        int[] edgesIndex5 = {1};
-        setEdges(nodes.get(5), edgesIndex5, false);
-
-        update();
-    }
-
 
     public void setEdges(Node node, int[] edgesIndex, boolean undirected){
         HashMap<String, Node> edges = new HashMap<String, Node> ();
