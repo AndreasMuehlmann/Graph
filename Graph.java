@@ -53,7 +53,6 @@ public class Graph{
     public void setNodeColors(Color color){
         for (Node node : nodes)
             node.setNodeColor(color);
-
     }
 
     public Color giveRandomColor(){

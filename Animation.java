@@ -2,7 +2,6 @@ import java.util.*;
 import java.awt.Color;
 
 
-
 class Animation
 {
     Graph graph;
@@ -34,15 +33,15 @@ class Animation
     {
         delay(1);
 
-       DFSAnimated(nodes.get(0), nodes.get(8), Color.blue, 0.05);
-       delay(2);
+        DFSAnimated(nodes.get(0), nodes.get(8), Color.blue, 0.05);
+        delay(2);
 
-       randomColoring(0.01);
-       graph.setEdgeColors(Color.black);
-       graph.setNodeColors(Color.white);
+        randomColoring(0.01);
+        graph.setEdgeColors(Color.black);
+        graph.setNodeColors(Color.white);
 
 
-       DFSAnimated(nodes.get(0), nodes.get(9), Color.blue, 1);
+        DFSAnimated(nodes.get(0), nodes.get(9), Color.blue, 1);
 
     }
 
